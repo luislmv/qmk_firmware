@@ -17,42 +17,61 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
+#include "keymap_spanish.h"
+
+enum {
+  TD_SC, // "," , ";"
+  TD_CO, // "." , ":"
+  TD_DQ, // "'" , """
+  TD_BPI, // "|" , "\"
+  TD_CAP,
+  TD_ALT,
+  TD_PRN, // "(" , ")"
+  TD_BRC, // "[" , "]"
+  TD_CBR, // "{" , "}"
+  TD_ABK, // "<" , ">"
+  TD_SCM, // "«" , "»"
+  TD_EXL, // "¡" , "!"
+  TD_QUE, // "¿" , "?"
+  TD_COM, // "“" , "”"
+  TD_TIL, // "ñ" , "~"
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,
+      KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L,TD(TD_TIL), ES_ACUT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_ESC,
+   TD(TD_CAP),    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M,TD(TD_SC),TD(TD_CO), KC_SLSH, KC_RSFT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,   MO(1),  KC_SPC,     KC_ENT,   MO(2), KC_RALT
+                                          KC_LGUI,   MO(1),  KC_SPC,     KC_ENT,   MO(2), TD(TD_ALT)
                                       //`--------------------------'  `--------------------------'
 
   ),
 
   [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_TAB,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, KC_BSPC,
+       KC_ESC,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                        KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_LEFT, KC_DOWN,   KC_UP,KC_RIGHT, XXXXXXX, XXXXXXX,
+      KC_LCTL,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,   KC_8 ,    KC_9,  KC_F11,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      KC_LSFT, XXXXXXX, XXXXXXX,  ES_EQL, ES_SLSH, ES_MINS,                      ES_PLUS, ES_ASTR, ES_CIRC,    KC_0,  KC_F12, KC_RSFT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI, _______,  KC_SPC,     KC_ENT,   MO(3), KC_RALT
+                                          KC_LGUI, _______,  KC_SPC,     KC_ENT,   MO(3), TD(TD_ALT)
                                       //`--------------------------'  `--------------------------'
   ),
 
   [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_TAB, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
+       KC_TAB, XXXXXXX, ES_BULT, S(KC_6),ES_HASH,TD(TD_EXL),                   TD(TD_PRN), KC_HOME,   KC_UP, KC_END, KC_PGUP, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_MINS,  KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS,  KC_GRV,
+      KC_LCTL, XXXXXXX, ES_NOT,TD(TD_BPI), S(KC_5),TD(TD_QUE),                   TD(TD_BRC), KC_LEFT, KC_DOWN,KC_RIGHT,KC_PGDN,  KC_INS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
+      KC_LSFT, XXXXXXX, ES_CCED, S(KC_4), ES_AT,TD(TD_COM),                   TD(TD_CBR),TD(TD_ABK),TD(TD_SCM), TD(TD_DQ), ES_GRV, KC_PSCR,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,   MO(3),  KC_SPC,     KC_ENT, _______, KC_RALT
+                                          KC_LGUI,   MO(3),  KC_SPC,     KC_ENT, _______, KC_LALT
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -64,9 +83,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI, _______,  KC_SPC,     KC_ENT, _______, KC_RALT
+                                          KC_LGUI, _______,  KC_SPC,     KC_ENT, _______, KC_LALT
                                       //`--------------------------'  `--------------------------'
   )
+};
+
+// Tap Dance definitions
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for ;, twice for :
+    [TD_SC] = ACTION_TAP_DANCE_DOUBLE(ES_COMM, ES_SCLN), // "," , ";"
+    [TD_CO] = ACTION_TAP_DANCE_DOUBLE(KC_DOT, ES_COLN), // "." , ":"
+    [TD_DQ] = ACTION_TAP_DANCE_DOUBLE(ES_QUOT, ES_DQUO), // "'" , """
+    [TD_BPI] = ACTION_TAP_DANCE_DOUBLE(ES_PIPE, ES_BSLS), // "|" , "\"
+    [TD_CAP] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),
+    [TD_ALT] = ACTION_TAP_DANCE_DOUBLE(KC_LALT, KC_RALT),
+    [TD_PRN] = ACTION_TAP_DANCE_DOUBLE(ES_LPRN, ES_RPRN), // "(" , ")"
+    [TD_BRC] = ACTION_TAP_DANCE_DOUBLE(ES_LBRC, ES_RBRC), // "[" , "]"
+    [TD_CBR] = ACTION_TAP_DANCE_DOUBLE(ES_LCBR, ES_RCBR), // "{" , "}"
+    [TD_ABK] = ACTION_TAP_DANCE_DOUBLE(ES_LABK, ES_RABK), // "<" , ">"
+    [TD_SCM] = ACTION_TAP_DANCE_DOUBLE(ALGR(ES_Z), ALGR(ES_X)), // "«" , "»"
+    [TD_EXL] = ACTION_TAP_DANCE_DOUBLE(ES_IEXL, ES_EXLM), // "¡" , "!"
+    [TD_QUE] = ACTION_TAP_DANCE_DOUBLE(ES_IQUE, ES_QUES), // "¿" , "?"
+    [TD_COM] = ACTION_TAP_DANCE_DOUBLE(ALGR(ES_V), ALGR(ES_B)), // "“" , "”"
+    [TD_TIL] = ACTION_TAP_DANCE_DOUBLE(ES_NTIL, ES_TILD), // "ñ" , "~"
 };
 
 #ifdef OLED_DRIVER_ENABLE
