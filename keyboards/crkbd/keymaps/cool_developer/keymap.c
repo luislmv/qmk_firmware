@@ -33,6 +33,15 @@ enum layers {
   _ADJUST
 };
 
+enum custom_keycodes {
+  QWERTY = SAFE_RANGE,
+  LOWER,
+  RAISE,
+  ADJUST,
+  MACRO1,
+  MACRO2
+};
+
 enum {
   TD_SC, // "," , ";"
   TD_CO, // "." , ":"
@@ -319,7 +328,7 @@ void render_status_secondary(void) {
 }
 
 void oled_task_user(void) {
-    if (timer_elapsed32(oled_timer) > 1500000) {
+    if (timer_elapsed32(oled_timer) > 10000) {
         oled_off();
         return;
     }
@@ -335,3 +344,14 @@ void oled_task_user(void) {
 }
 
 #endif // OLED_DRIVER_ENABLE
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (record->event.pressed) {
+#ifdef OLED_DRIVER_ENABLE
+        oled_timer = timer_read32();
+#endif
+    // set_timelog();
+  }
+
+  return true;
+}
