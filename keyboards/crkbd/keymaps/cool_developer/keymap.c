@@ -131,6 +131,56 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_TIL] = ACTION_TAP_DANCE_DOUBLE(ES_NTIL, ES_TILD), // "ñ" , "~"
 };
 
+//RGB layer deficiency.
+
+// When capslock is active.
+const rgblight_segment_t PROGMEM rgb_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, RGBLED_NUM, HSV_GREEN}
+);
+
+// When lower is active.
+const rgblight_segment_t PROGMEM rgb_lower_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 15, HSV_BLUE}, {24, 3, HSV_BLUE}
+);
+
+// When raise is active.
+const rgblight_segment_t PROGMEM rgb_raise_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 15, HSV_RED}, {24, 3, HSV_RED}
+);
+
+// When adjus is active.
+const rgblight_segment_t PROGMEM rgb_adjust_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 15, HSV_PURPLE}, {24, 3, HSV_PURPLE}
+);
+
+// Listing the previous layers.
+const rgblight_segment_t* const PROGMEM rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    rgb_capslock_layer,
+    rgb_lower_layer,
+    rgb_raise_layer,
+    rgb_adjust_layer
+);
+
+// Enable the RGB layers
+void keyboard_post_init_user(void) {
+    rgblight_layers = rgb_layers;
+}
+
+// Enable and disable RGB layers based on keyboard state.
+bool led_update_user(led_t led_state) {
+    rgblight_set_layer_state(0, led_state.caps_lock);
+    return true;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(1, layer_state_cmp(state, _LOWER));
+    rgblight_set_layer_state(2, layer_state_cmp(state, _RAISE));
+    rgblight_set_layer_state(3, layer_state_cmp(state, _ADJUST));
+    return state;
+}
+
+// Start of the instructions for the OLED display.
+
 #ifdef OLED_DRIVER_ENABLE
 static uint32_t oled_timer = 0;
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_270; }
@@ -343,14 +393,13 @@ void oled_task_user(void) {
     }
 }
 
-#endif // OLED_DRIVER_ENABLE
+#endif // End of the instructions for the OLED display.
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
 #ifdef OLED_DRIVER_ENABLE
         oled_timer = timer_read32();
 #endif
-    // set_timelog();
   }
 
   return true;
