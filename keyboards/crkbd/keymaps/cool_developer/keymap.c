@@ -19,12 +19,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include "keymap_spanish.h"
 
+//Sets up a 32 bit structure that we can store settings with in memory, and write to the EEPROM.
+//The lang variable determines whether the keymap should be set to English or Spanish.
+typedef union {
+  uint32_t raw;
+  struct {
+    bool     lang :1; // 1 for Spanish, 0 for English.
+  };
+} user_config_t;
+user_config_t user_config;
+
 extern keymap_config_t keymap_config;
 
 #ifdef RGBLIGHT_ENABLE
 //Following line allows macro to read current RGB settings
 extern rgblight_config_t rgblight_config;
 #endif
+
+//bool lang = true;
 
 enum layers {
   _QWERTY,
@@ -39,7 +51,8 @@ enum custom_keycodes {
   RAISE,
   ADJUST,
   MACRO1,
-  MACRO2
+  MACRO2,
+  CH_LANG
 };
 
 enum {
@@ -104,14 +117,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CH_LANG,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LGUI, _______,  KC_SPC,     KC_ENT, _______, KC_LALT
                                       //`--------------------------'  `--------------------------'
   )
 };
 
-// Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
     // Tap once for ;, twice for :
     [TD_SC] = ACTION_TAP_DANCE_DOUBLE(ES_COMM, ES_SCLN), // "," , ";"
@@ -396,11 +408,35 @@ void oled_task_user(void) {
 #endif // End of the instructions for the OLED display.
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+      // Read the user config from EEPROM
+  user_config.raw = eeconfig_read_user();
+
   if (record->event.pressed) {
 #ifdef OLED_DRIVER_ENABLE
         oled_timer = timer_read32();
 #endif
   }
+  switch (keycode) {
+    case CH_LANG:
+      if (!record->event.pressed) {
+          user_config.lang ^= 1; // Toggles the status.
+          eeconfig_update_user(user_config.raw); // Writes the new status to EEPROM.
+      }
+       return true;
+       /*
+    case KC_A:
+        if (record->event.pressed) {
 
-  return true;
+           // if(lang){
+                if(user_config.lang){
+                tap_code(KC_1);
+                return false;
+            } else {
+                return true;
+            }
+        }
+        */
+    default:
+      return true;
+  }
 }
